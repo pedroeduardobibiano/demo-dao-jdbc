@@ -1,4 +1,4 @@
-package model.entitites;
+package model.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -14,18 +14,18 @@ public class Seller implements Serializable {
     private LocalDate birthDate;
     private Double baseSalary;
 
-    private Depatment depatment;
+    private Department department;
 
     public Seller() {
     }
 
-    public Seller(Integer id, String name, String email, LocalDate birthDate, Double baseSalary, Depatment depatment) {
+    public Seller(Integer id, String name, String email, LocalDate birthDate, Double baseSalary, Department depatment) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.birthDate = birthDate;
         this.baseSalary = baseSalary;
-        this.depatment = depatment;
+        this.department = depatment;
     }
 
     public Integer getId() {
@@ -68,12 +68,12 @@ public class Seller implements Serializable {
         this.baseSalary = baseSalary;
     }
 
-    public Depatment getDepatment() {
-        return depatment;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setDepatment(Depatment depatment) {
-        this.depatment = depatment;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class Seller implements Serializable {
                 ", email='" + email + '\'' +
                 ", birthDate=" + birthDate +
                 ", baseSalary=" + baseSalary +
-                ", depatment=" + depatment +
+                ", department=" + department +
                 '}';
     }
 }
