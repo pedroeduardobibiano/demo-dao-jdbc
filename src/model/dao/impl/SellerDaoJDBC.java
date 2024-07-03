@@ -6,10 +6,9 @@ import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,42 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void insert(Seller obj) {
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "INSERT INTO seller "
+                            + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+                            + "VALUES "
+                            + "(?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS
+            );
+            st.setString(1, obj.getName());
+            st.setString(2, obj.getEmail());
 
+            LocalDateTime ldt = obj.getBirthDate();
+            LocalDate localDate = ldt.toLocalDate();
+            java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
+            st.setDate(3, sqlDate);
+
+            st.setDouble(4, obj.getBaseSalary());
+            st.setInt(5, obj.getDepartment().getId());
+
+            int rowsAffected = st.executeUpdate();
+            if (rowsAffected > 0) {
+                ResultSet rs = st.getGeneratedKeys();
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    obj.setId(id);
+                }
+                DB.closeResultSet(rs);
+            } else {
+                throw new DbException("Unexpected error! No rows affected!");
+            }
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
@@ -72,7 +106,24 @@ public class SellerDaoJDBC implements SellerDao {
         seller.setName(rs.getString("Name"));
         seller.setEmail(rs.getString("Email"));
         seller.setBaseSalary(rs.getDouble("BaseSalary"));
-        seller.setBirthDate(rs.getDate("BirthDate").toLocalDate());
+
+        try {
+            Date sqlDate = rs.getDate("BirthDate");
+
+            if (sqlDate != null) {
+                LocalDate localDate = sqlDate.toLocalDate();
+
+                LocalDateTime localDateTime = localDate.atStartOfDay();
+
+                System.out.println("LocalDateTime: " + localDateTime);
+            } else {
+                System.out.println("A data é nula.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         seller.setDepartment(dep);
         return seller;
     }
