@@ -120,7 +120,7 @@ public class SellerDaoJDBC implements SellerDao {
                 System.out.println("A data é nula.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
 
