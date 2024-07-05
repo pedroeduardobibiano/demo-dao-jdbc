@@ -5,7 +5,6 @@ import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -34,10 +33,18 @@ public class Program {
         }
 
         System.out.println("\n=== TEST 4: seller findByAll ======");
-        LocalDate today = LocalDate.now();
-        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", today.atStartOfDay(), 4000.0, department);
+        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 3500.00, department);
+
         sellerDao.insert(newSeller);
         System.out.println("Inserted! New id = " + newSeller.getId());
+
+        System.out.println("\n=== TEST 5: seller update ======");
+        seller = sellerDao.findById(1);
+        seller.setName("Pedro Eduardo");
+        seller.setEmail("pedro@gmail.com");
+        sellerDao.update(seller);
+        System.out.println("Update completed!");
+
 
     }
 }
