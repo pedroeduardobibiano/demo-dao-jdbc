@@ -92,6 +92,26 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void deleteById(Integer id) {
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    """
+                            DELETE FROM seller WHERE Id = ?
+                            """
+            );
+
+            st.setInt(1, id);
+            int rows = st.executeUpdate();
+
+            if(rows == 0){
+                throw new DbException("Unexpected error! No rows affected!");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
 
     }
 
@@ -130,7 +150,6 @@ public class SellerDaoJDBC implements SellerDao {
         seller.setEmail(rs.getString("Email"));
         seller.setBaseSalary(rs.getDouble("BaseSalary"));
         seller.setBirthDate(rs.getDate("BirthDate"));
-
 
 
         seller.setDepartment(dep);
